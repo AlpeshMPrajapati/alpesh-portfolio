@@ -212,10 +212,11 @@ import { profile } from '../../data/profile';
     }
   }, { passive: true });
 
-  // Theme toggle functionality
+  // Theme toggle functionality with smooth transition
   const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn');
   themeToggleBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
+      document.documentElement.classList.add('theme-transitioning');
       const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', newTheme);
@@ -229,6 +230,10 @@ import { profile } from '../../data/profile';
       try {
         localStorage.setItem('theme', newTheme);
       } catch (e) {}
+
+      setTimeout(() => {
+        document.documentElement.classList.remove('theme-transitioning');
+      }, 350);
     });
   });
 
