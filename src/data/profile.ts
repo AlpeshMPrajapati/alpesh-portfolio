@@ -18,7 +18,7 @@ export const profile = {
   email: 'alpeshbhaiprajapati398@gmail.com', // Update with actual email
 
   // Resume file path
-  resume: '/resume/Alpesh_Prajapati_Resume.pdf',
+  resume: '/resume/Alpesh_Prajapati_JS_Full_stack.pdf',
 };
 
 export type Profile = typeof profile;
