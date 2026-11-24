@@ -18,18 +18,18 @@ const canonicalUrl = Astro.url.href;
 ---
 
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en" class="h-full dark" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="generator" content={Astro.generator} />
 
-  <!-- Theme Initialization (Prevents FOUC) -->
+  <!-- Theme Initialization (Defaults to Dark Mode, Prevents FOUC) -->
   <script is:inline>
     (function () {
       try {
         const stored = localStorage.getItem('theme');
-        const theme = stored ? stored : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        const theme = stored === 'light' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', theme);
         if (theme === 'light') {
           document.documentElement.classList.add('light');
