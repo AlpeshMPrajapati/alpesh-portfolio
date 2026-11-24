@@ -1,0 +1,150 @@
+---
+// src/components/Projects/Projects.astro
+import { featuredProjects } from '../../data/projects';
+---
+
+<section id="projects" class="py-24 md:py-32 scroll-mt-16">
+  <div class="section-container">
+    <!-- Section Header -->
+    <div class="section-header reveal">
+      <h2 class="section-title">Featured Projects</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <!-- Confidentiality note -->
+    <p class="text-sm mb-10 reveal" style="color: var(--color-text-muted); font-style: italic;">
+      These are client projects from my professional work at eSparkBiz. Detailed information is kept general to respect client confidentiality.
+    </p>
+
+    <div class="space-y-8">
+      {featuredProjects.map((project, i) => (
+        <article
+          class={`card p-6 md:p-8 reveal ${i === 0 ? 'border-l-2' : ''}`}
+          style={`transition-delay: ${0.1 + i * 0.15}s; ${i === 0 ? 'border-left-color: var(--color-accent-primary);' : ''}`}
+        >
+          <!-- Header row -->
+          <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
+            <div class="flex items-center gap-3">
+              <!-- Status indicator -->
+              {project.status === 'active' && (
+                <span class="flex items-center gap-1.5 text-xs font-mono px-2.5 py-1 rounded-full" style="background: rgba(124,111,224,0.15); color: var(--color-accent-primary); border: 1px solid rgba(124,111,224,0.3);">
+                  <span class="w-1.5 h-1.5 rounded-full inline-block" style="background: var(--color-accent-primary); animation: pulse 2s ease-in-out infinite;"></span>
+                  Active
+                </span>
+              )}
+              {project.status === 'completed' && (
+                <span class="text-xs font-mono px-2.5 py-1 rounded-full" style="background: rgba(100,116,139,0.15); color: var(--color-text-muted); border: 1px solid rgba(100,116,139,0.2);">
+                  Completed
+                </span>
+              )}
+              {project.confidential && (
+                <span class="flex items-center gap-1 text-xs" style="color: var(--color-text-muted);">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                  Client Work
+                </span>
+              )}
+            </div>
+            <span class="font-mono text-xs" style="color: var(--color-text-muted);">{project.duration}</span>
+          </div>
+
+          <!-- Title & tagline -->
+          <h3 class="text-xl md:text-2xl font-bold mb-2" style="color: var(--color-text-primary);">
+            {project.title}
+          </h3>
+          <p class="text-sm mb-5" style="color: var(--color-accent-secondary);">
+            {project.tagline}
+          </p>
+
+          <!-- Two-column layout on desktop -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <!-- Overview, Problem, Role & Architecture -->
+            <div class="space-y-4">
+              <div>
+                <h4 class="text-xs font-mono uppercase tracking-wider mb-2" style="color: var(--color-text-muted);">Overview</h4>
+                <p class="text-sm leading-relaxed" style="color: var(--color-text-secondary);">{project.overview}</p>
+              </div>
+
+              {project.problem && !project.problem.startsWith('[UPDATE') && (
+                <div>
+                  <h4 class="text-xs font-mono uppercase tracking-wider mb-2" style="color: var(--color-text-muted);">Problem Addressed</h4>
+                  <p class="text-sm leading-relaxed" style="color: var(--color-text-secondary);">{project.problem}</p>
+                </div>
+              )}
+
+              <div>
+                <h4 class="text-xs font-mono uppercase tracking-wider mb-2" style="color: var(--color-text-muted);">Role</h4>
+                <p class="text-sm font-medium" style="color: var(--color-accent-primary);">{project.role}</p>
+              </div>
+
+              {project.architecture && !project.architecture.startsWith('[UPDATE') && (
+                <div>
+                  <h4 class="text-xs font-mono uppercase tracking-wider mb-2" style="color: var(--color-text-muted);">Architecture</h4>
+                  <p class="text-xs leading-relaxed font-mono p-3 rounded-lg border" style="background: var(--color-bg-secondary); border-color: var(--color-border-subtle); color: var(--color-text-secondary);">
+                    {project.architecture}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <!-- Contributions -->
+            <div>
+              <h4 class="text-xs font-mono uppercase tracking-wider mb-2" style="color: var(--color-text-muted);">Key Contributions</h4>
+              <ul class="space-y-2">
+                {project.contributions.filter(c => !c.startsWith('[UPDATE')).map(contrib => (
+                  <li class="flex items-start gap-2 text-sm leading-relaxed" style="color: var(--color-text-secondary);">
+                    <span class="mt-1 flex-shrink-0" style="color: var(--color-accent-primary);">▹</span>
+                    <span>{contrib}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <!-- Technical Challenges & Deep-Dives (if available) -->
+          {project.challenges && project.challenges.length > 0 && (
+            <div class="mt-8 pt-6 border-t" style="border-color: var(--color-border-subtle);">
+              <h4 class="text-xs font-mono uppercase tracking-wider mb-4 flex items-center gap-2" style="color: var(--color-accent-primary);">
+                <span>⚡</span> Key Engineering Challenges Solved
+              </h4>
+              <div class={`grid gap-4 ${project.challenges.length === 3 ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
+                {project.challenges.map((c) => (
+                  <div class="p-4 rounded-lg border text-sm" style="background: rgba(124,111,224,0.03); border-color: var(--color-border-subtle);">
+                    <h5 class="font-semibold mb-2 text-sm" style="color: var(--color-text-primary);">{c.title}</h5>
+                    <div class="space-y-2 text-xs leading-relaxed" style="color: var(--color-text-secondary);">
+                      <p><strong class="font-mono text-[11px] uppercase tracking-wider" style="color: var(--color-accent-secondary);">Challenge:</strong> {c.problem}</p>
+                      <p><strong class="font-mono text-[11px] uppercase tracking-wider" style="color: var(--color-accent-primary);">Solution:</strong> {c.solution}</p>
+                      {c.impact && (
+                        <p class="pt-1 font-mono text-[11px]" style="color: var(--color-accent-secondary);">
+                          <span style="color: var(--color-accent-primary);">✓</span> {c.impact}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <!-- Technologies -->
+          <div class="mt-6 pt-5 border-t" style="border-color: var(--color-border-subtle);">
+            <h4 class="text-xs font-mono uppercase tracking-wider mb-3" style="color: var(--color-text-muted);">Technologies</h4>
+            <div class="flex flex-wrap gap-2">
+              {project.technologies.map(tech => (
+                <span class="tech-tag">{tech}</span>
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+</style>

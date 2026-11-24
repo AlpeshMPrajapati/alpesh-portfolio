@@ -1,0 +1,36 @@
+---
+// src/components/Engineering/EngineeringInterests.astro
+import { engineeringInterests } from '../../data/skills';
+---
+
+<section id="interests" class="py-24 md:py-32 scroll-mt-16" style="background: linear-gradient(to bottom, transparent, rgba(124,111,224,0.03), transparent);">
+  <div class="section-container">
+    <!-- Section Header -->
+    <div class="section-header reveal">
+      <h2 class="section-title">Engineering Interests</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <p class="text-sm mb-12 max-w-2xl reveal" style="color: var(--color-text-secondary); transition-delay: 0.1s;">
+      Topics I actively work with and enjoy exploring beyond day-to-day tasks.
+    </p>
+
+    <!-- Interests grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {engineeringInterests.map((interest, i) => (
+        <div
+          class="interest-card reveal"
+          style={`transition-delay: ${0.1 + i * 0.07}s;`}
+        >
+          <span class="text-2xl mb-3 block" aria-hidden="true">{interest.icon}</span>
+          <h3 class="text-sm font-semibold mb-2" style="color: var(--color-text-primary);">
+            {interest.label}
+          </h3>
+          <p class="text-xs leading-relaxed" style="color: var(--color-text-muted);">
+            {interest.description}
+          </p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

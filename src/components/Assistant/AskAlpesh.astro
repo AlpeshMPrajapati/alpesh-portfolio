@@ -1,0 +1,246 @@
+---
+// src/components/Assistant/AskAlpesh.astro
+// "Ask Alpesh" - Interactive portfolio chatbot
+---
+
+<!-- Chatbot FAB and Panel -->
+<div class="chatbot-container" id="chatbot-root">
+  <!-- Panel -->
+  <div class="chatbot-panel" id="chatbot-panel" role="dialog" aria-label="Ask Alpesh - Portfolio Assistant" aria-hidden="true">
+    <!-- Header -->
+    <div class="flex items-center justify-between p-4 border-b" style="border-color: var(--color-border-subtle);">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full flex items-center justify-center text-lg" style="background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));">
+          🤖
+        </div>
+        <div>
+          <p class="text-sm font-semibold" style="color: var(--color-text-primary);">Ask Alpesh</p>
+          <p class="text-xs" style="color: var(--color-accent-primary);">● Online</p>
+        </div>
+      </div>
+      <button
+        id="chatbot-close"
+        aria-label="Close chatbot"
+        class="btn-ghost w-8 h-8 flex items-center justify-center rounded-full text-lg"
+        style="color: var(--color-text-muted);"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div class="chatbot-messages" id="chatbot-messages" aria-live="polite" aria-label="Chat messages">
+      <!-- Initial bot message -->
+      <div class="chatbot-message bot" id="chatbot-welcome">
+        Hi! I'm Ask Alpesh — your guide to Alpesh's professional background. Ask me about his skills, experience, or projects.
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="chatbot-suggestions" id="chatbot-suggestions" aria-label="Suggested questions">
+      <button class="chatbot-suggestion" data-q="Tell me about Alpesh">About Alpesh</button>
+      <button class="chatbot-suggestion" data-q="What backend technologies does he use?">Backend stack</button>
+      <button class="chatbot-suggestion" data-q="Tell me about ChainIT">ChainIT project</button>
+      <button class="chatbot-suggestion" data-q="Does he know NestJS?">NestJS?</button>
+      <button class="chatbot-suggestion" data-q="How can I contact him?">Contact</button>
+    </div>
+
+    <!-- Input -->
+    <div class="chatbot-input-row">
+      <input
+        type="text"
+        id="chatbot-input"
+        class="chatbot-input"
+        placeholder="Ask about Alpesh..."
+        aria-label="Type your question"
+        maxlength="200"
+        autocomplete="off"
+      />
+      <button
+        id="chatbot-send"
+        class="chatbot-send"
+        aria-label="Send message"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- FAB Button -->
+  <button
+    class="chatbot-fab"
+    id="chatbot-fab"
+    aria-label="Open Ask Alpesh assistant"
+    aria-expanded="false"
+    aria-controls="chatbot-panel"
+    title="Ask Alpesh"
+  >
+    <svg id="chatbot-fab-icon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <svg id="chatbot-fab-close" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+
+  <!-- Notification badge (first visit) -->
+  <div
+    id="chatbot-badge"
+    class="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white"
+    style="background: var(--color-accent-primary); display: none;"
+    aria-hidden="true"
+  >
+    !
+  </div>
+</div>
+
+<script>
+  // Inline chatbot response engine
+  const rules = [
+    { patterns: ['hello', 'hi', 'hey', 'greet', 'start', 'help'], response: `Hi! I'm Ask Alpesh — your guide to Alpesh's professional background. Ask me about his skills, experience, or projects.\n\nTry asking:\n• What backend technologies does he use?\n• Tell me about ChainIT\n• Does he know NestJS?\n• How can I contact him?` },
+    { patterns: ['who', 'about alpesh', 'introduce', 'tell me about'], response: `Alpesh Prajapati is a Full Stack Developer based in Ahmedabad, India, with nearly 3 years of professional experience.\n\nHe specializes in TypeScript, Node.js, NestJS, React.js, and PostgreSQL. On his primary project, ChainIT, he builds scalable microservices with CQRS and RabbitMQ, designs complex database schemas, and develops user-friendly React web applications and PWAs.\n\nHe has deep hands-on experience in distributed systems, asynchronous event flows, zero-downtime database migrations, and visual workflow automation engines.` },
+    { patterns: ['backend', 'server', 'node', 'nodejs', 'node.js'], response: `Alpesh's primary stack is Node.js with TypeScript. He uses NestJS and Express.js for backend services and RESTful APIs.\n\nHis backend experience includes:\n• Microservices architecture\n• Message-driven workflows with RabbitMQ\n• CQRS pattern implementation\n• Role-based access control (RBAC)\n• Database schema design (PostgreSQL, MySQL, MongoDB)\n• Asynchronous and distributed processing` },
+    { patterns: ['nestjs', 'nest.js', 'nest js'], response: `Yes, NestJS is one of Alpesh's core frameworks. He uses it professionally at eSparkBiz for building structured, scalable backend applications.\n\nHe's used NestJS for modular REST APIs, CQRS patterns, dependency injection, and microservices setups.` },
+    { patterns: ['express', 'expressjs', 'express.js'], response: `Alpesh has solid experience with Express.js for building REST APIs and backend services. It's part of his core backend toolkit alongside NestJS.` },
+    { patterns: ['typescript', ' ts '], response: `TypeScript is Alpesh's primary language for all JavaScript work. He uses it daily at eSparkBiz across NestJS and React projects. He values strong typing for building more maintainable and reliable systems.` },
+    { patterns: ['react', 'reactjs', 'frontend', 'react.js'], response: `Alpesh works with React.js for frontend development when his projects require it. While his primary focus is backend engineering, he's comfortable building React-based interfaces and integrating them with backend APIs.\n\nHe also has experience with Next.js and Tailwind CSS.` },
+    { patterns: ['microservice', 'microservices', 'distributed', 'distributed system'], response: `Yes, Alpesh has hands-on experience with microservices-based architectures in his professional work. He's worked on distributed systems where separate services communicate through APIs and message queues.\n\nHe's also familiar with CQRS and event-driven patterns common in microservices environments.` },
+    { patterns: ['rabbitmq', 'rabbit mq', 'message queue', 'queue', 'message broker'], response: `Alpesh has used RabbitMQ professionally for implementing asynchronous message-driven workflows — such as background processing and inter-service communication in backend systems.` },
+    { patterns: ['cqrs', 'command query'], response: `Alpesh has applied CQRS (Command Query Responsibility Segregation) patterns in his backend work, separating read and write operations in backend services, often used alongside event-driven architectures.` },
+    { patterns: ['database', 'db', 'sql', 'postgres', 'postgresql', 'mysql', 'mongodb', 'mongo'], response: `Alpesh has experience with multiple databases:\n\n• PostgreSQL — primary relational database\n• MySQL — relational database work\n• MongoDB — non-relational / document store\n\nHe works on schema design, query optimization, and ORM integration.` },
+    { patterns: ['chainit', 'chain it'], response: `ChainIT is Alpesh's primary featured project — an enterprise verified digital identity, attestation, and payments platform he has contributed to for ~1 year and 10 months as a Full Stack Developer.\n\nKey highlights of his work on ChainIT:\n• Built the end-to-end TCA (Tokenized Consideration Asset) flow, tying signed agreements (Pactvera) directly to value movements, asset snapshots, and stable-coin payouts.\n• Developed user-facing React applications, including the TCA wizard, Org Admin Portal, Payments Admin, and Mobile PWA.\n• Built custom canvas nodes and backend executors for a Make.com-style visual workflow engine, along with a Redis-context recovery API.\n• Refactored the core VDT layer onto a unified Data VDT model with centralized record ID generation and generic WHEN timestamps.\n• Stabilized Pactvera cross-service records by aligning schemas and routing updates to primary ledgers.\n• Engineered multi-party KYB/UBO attestation task trees with zero duplicate tasks.\n• Integrated payment processing in ChainIT Pay (QorPay card processing, US Bank FBO accounts) with encrypted credentials at rest.\n• Optimized PostgreSQL queries with array matching (= ANY(...)) and consolidated user/role repository access.` },
+    { patterns: ['bluemind', 'blue mind'], response: `BlueMind – Digital Office is a financial-services CRM and advisory platform Alpesh contributed to for ~6–8 months in 2024 as a Full Stack Developer (Frontend & API Integration Focus).\n\nKey areas he delivered:\n• Client Relationship Management (CRM): contact profiles, merging, bulk actions, and team assignments.\n• Financial Planning: asset/liability management, net worth tracking, and cash flow workflows.\n• Document & Compliance Management: document library, templates, status tracking, and e-signatures.\n• Communications: Gmail API & Microsoft Outlook integrations, rich-text email templates, and email consent.\n• Productivity: calendar event scheduling (Syncfusion), task workflows with reminders, and call logs.` },
+    { patterns: ['radefy'], response: `Radefy is a hospitality technology platform Alpesh contributed to for ~5 months in 2024 as a Frontend Developer (Multi-App & API Integration).\n\nHe built features across three interconnected React 18 applications within an Nx monorepo (Business Admin, Hotel Administration, and Guest Portal).\n\nKey areas he delivered:\n• Dynamic Form Builder: drag-and-drop field ordering (React Beautiful DnD) with custom Formik/Yup validation.\n• Digital Onboarding: QR-code-based guest onboarding and online check-in.\n• Real-Time Communication: live guest chat and messaging using Microsoft SignalR.\n• Digital Concierge: reservation-based digital keys, request tracking, and automated notification feeds.` },
+    { patterns: ['esparkbiz', 'espark', 'company', 'employer', 'work at'], response: `Alpesh has been working at eSparkBiz since January 2024 as a Software Developer. It's a software development company based in Ahmedabad, India.\n\nIn this role, he works on client projects across different business domains — contributing to backend development, API design, and sometimes React.js frontend work.` },
+    { patterns: ['experience', 'years', 'tenure', 'how long'], response: `Alpesh has nearly 3 years of professional software development experience. His current role at eSparkBiz started in January 2024.\n\nAcross this time he's contributed to multiple client projects (ChainIT, BlueMind, Radefy) and built expertise in Node.js, TypeScript, NestJS, and related technologies.` },
+    { patterns: ['contact', 'reach', 'email', 'hire', 'available', 'opportunity'], response: `You can reach Alpesh at the contact section of this portfolio.\n\n📧 Use the "Say Hello" button to send an email\n💼 Connect on LinkedIn\n🐙 Check out his work on GitHub\n\nHe's open to discussing new opportunities and interesting engineering challenges.` },
+    { patterns: ['resume', 'cv', 'download'], response: `Alpesh's resume is available for download — click the "Download Resume" button in the navigation or hero section.` },
+    { patterns: ['docker', 'devops', 'ci/cd', 'deployment'], response: `Alpesh has familiarity with Docker for containerization and DevOps fundamentals including CI/CD concepts. He uses Docker in development workflows.` },
+    { patterns: ['java', 'spring', 'spring boot'], response: `Java and Spring Boot are part of Alpesh's additional knowledge base — areas he's actively exploring to broaden his backend engineering skills beyond the JavaScript/TypeScript ecosystem.` },
+    { patterns: ['graphql'], response: `GraphQL is part of Alpesh's backend toolkit. He has experience with it as an alternative API design approach alongside REST.` },
+    { patterns: ['skill', 'tech stack', 'technology', 'technologies', 'tools'], response: `Alpesh's core technology stack:\n\nBackend: Node.js · TypeScript · NestJS · Express.js · REST APIs · Microservices · GraphQL · RabbitMQ · CQRS · RBAC\n\nFrontend: React.js · Next.js · JavaScript · TypeScript · Tailwind CSS\n\nDatabases: PostgreSQL · MySQL · MongoDB\n\nTools: Docker · Git · GitHub · Postman\n\nAdditional: Java · Spring Boot (learning)` },
+  ];
+
+  const fallbackResponse = `I don't have specific information about that. For anything not covered here, feel free to reach out to Alpesh directly at the contact section.\n\nYou can ask me about his skills, experience, specific projects, or how to get in touch.`;
+
+  function getResponse(input) {
+    const normalized = input.toLowerCase().trim();
+    for (const rule of rules) {
+      for (const pattern of rule.patterns) {
+        if (normalized.includes(pattern)) return rule.response;
+      }
+    }
+    return fallbackResponse;
+  }
+
+  const fab = document.getElementById('chatbot-fab');
+  const panel = document.getElementById('chatbot-panel');
+  const closeBtn = document.getElementById('chatbot-close');
+  const input = document.getElementById('chatbot-input') as HTMLInputElement;
+  const sendBtn = document.getElementById('chatbot-send');
+  const messagesContainer = document.getElementById('chatbot-messages');
+  const badge = document.getElementById('chatbot-badge');
+  const fabIcon = document.getElementById('chatbot-fab-icon');
+  const fabClose = document.getElementById('chatbot-fab-close');
+
+  let isOpen = false;
+  let messageCount = 0;
+
+  // Show badge after delay if not opened
+  setTimeout(() => {
+    if (!isOpen && badge) {
+      badge.style.display = 'flex';
+    }
+  }, 4000);
+
+  function toggleChat(open?: boolean) {
+    isOpen = open !== undefined ? open : !isOpen;
+    panel?.classList.toggle('open', isOpen);
+    fab?.setAttribute('aria-expanded', isOpen.toString());
+    panel?.setAttribute('aria-hidden', (!isOpen).toString());
+
+    if (fabIcon) fabIcon.style.display = isOpen ? 'none' : 'block';
+    if (fabClose) fabClose.style.display = isOpen ? 'block' : 'none';
+
+    if (badge) badge.style.display = 'none';
+
+    if (isOpen) {
+      setTimeout(() => input?.focus(), 300);
+    }
+  }
+
+  fab?.addEventListener('click', () => toggleChat());
+  closeBtn?.addEventListener('click', () => toggleChat(false));
+
+  function createMessage(content: string, role: 'bot' | 'user') {
+    const div = document.createElement('div');
+    div.className = `chatbot-message ${role}`;
+    // Render newlines and basic formatting
+    div.innerHTML = content
+      .replace(/\n/g, '<br>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/•/g, '•');
+    return div;
+  }
+
+  function addMessage(content: string, role: 'bot' | 'user') {
+    const msg = createMessage(content, role);
+    messagesContainer?.appendChild(msg);
+    // Scroll to bottom
+    if (messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+    messageCount++;
+  }
+
+  function sendMessage(text: string) {
+    if (!text.trim()) return;
+
+    // Add user message
+    addMessage(text, 'user');
+    if (input) input.value = '';
+
+    // Show typing indicator
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'chatbot-message bot';
+    typingDiv.innerHTML = '<span style="opacity:0.6; font-style:italic;">Thinking...</span>';
+    typingDiv.id = 'typing-indicator';
+    messagesContainer?.appendChild(typingDiv);
+    if (messagesContainer) messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Simulate response delay
+    setTimeout(() => {
+      const indicator = document.getElementById('typing-indicator');
+      indicator?.remove();
+      const response = getResponse(text);
+      addMessage(response, 'bot');
+    }, 400 + Math.random() * 400);
+  }
+
+  sendBtn?.addEventListener('click', () => sendMessage(input?.value || ''));
+
+  input?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage(input.value);
+    }
+  });
+
+  // Suggestion buttons
+  document.querySelectorAll('.chatbot-suggestion').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const q = btn.getAttribute('data-q');
+      if (q) {
+        if (!isOpen) toggleChat(true);
+        setTimeout(() => sendMessage(q), 300);
+      }
+    });
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) toggleChat(false);
+  });
+</script>

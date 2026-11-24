@@ -1,0 +1,162 @@
+---
+// src/layouts/MainLayout.astro
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title = 'Alpesh Prajapati | Software Engineer',
+  description = 'Backend-focused full stack software engineer with nearly 3 years of experience building scalable web applications, REST APIs, and microservices using Node.js, TypeScript, NestJS, and React.js.',
+  ogImage = '/og-image.png',
+} = Astro.props;
+
+const canonicalUrl = Astro.url.href;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="generator" content={Astro.generator} />
+
+  <!-- Theme Initialization (Prevents FOUC) -->
+  <script is:inline>
+    (function () {
+      try {
+        const stored = localStorage.getItem('theme');
+        const theme = stored ? stored : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        if (theme === 'light') {
+          document.documentElement.classList.add('light');
+          document.documentElement.classList.remove('dark');
+        } else {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Primary Meta Tags -->
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+  <meta name="keywords" content="Software Engineer, Backend Developer, Node.js, TypeScript, NestJS, Express.js, React.js, Full Stack Developer, Microservices, REST APIs, Alpesh Prajapati, eSparkBiz" />
+  <meta name="author" content="Alpesh Prajapati" />
+  <meta name="robots" content="index, follow" />
+  <meta name="language" content="English" />
+  <link rel="canonical" href={canonicalUrl} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:alt" content="Alpesh Prajapati - Software Engineer" />
+  <meta property="og:site_name" content="Alpesh Prajapati" />
+  <meta property="og:locale" content="en_IN" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
+  <meta name="twitter:image:alt" content="Alpesh Prajapati - Software Engineer" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Sitemap -->
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap-index.xml" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Alpesh Prajapati",
+      "jobTitle": "Software Engineer",
+      "description": "Backend-focused full stack software engineer specializing in Node.js, TypeScript, NestJS, and React.js.",
+      "url": "https://alpeshprajapati.dev",
+      "sameAs": [
+        "https://github.com/AlpeshMPrajapati",
+        "https://www.linkedin.com/in/alpesh-prajapati"
+      ],
+      "worksFor": {
+        "@type": "Organization",
+        "name": "eSparkBiz",
+        "url": "https://www.esparkbiz.com"
+      },
+      "knowsAbout": [
+        "Node.js", "TypeScript", "NestJS", "Express.js",
+        "React.js", "Microservices", "REST APIs", "RabbitMQ",
+        "PostgreSQL", "MongoDB", "CQRS", "Docker"
+      ]
+    }
+  </script>
+</head>
+<body class="h-full">
+  <!-- Skip to content (accessibility) -->
+  <a
+    href="#main"
+    class="fixed left-4 top-4 z-50 -translate-y-24 opacity-0 focus:translate-y-0 focus:opacity-100 transition-all duration-200 px-4 py-2 rounded-md bg-accent-primary text-white font-medium text-sm"
+    style="background: var(--color-accent-primary);"
+  >
+    Skip to content
+  </a>
+
+  <!-- Scroll Progress Bar -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <slot />
+
+  <!-- Global Scripts -->
+  <script>
+    // Scroll progress
+    const progressBar = document.getElementById('scroll-progress');
+    if (progressBar) {
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = percent + '%';
+      }, { passive: true });
+    }
+
+    // Scroll reveal using IntersectionObserver
+    const revealEls = document.querySelectorAll('.reveal, .reveal-left');
+    if (revealEls.length > 0) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      );
+      revealEls.forEach((el) => observer.observe(el));
+    }
+
+    // Page load animations (staggered)
+    document.addEventListener('DOMContentLoaded', () => {
+      const pageAnims = document.querySelectorAll('[data-page-anim]');
+      pageAnims.forEach((el, i) => {
+        const delay = parseInt(el.getAttribute('data-delay') || '0', 10);
+        setTimeout(() => {
+          (el as HTMLElement).style.opacity = '1';
+          (el as HTMLElement).style.transform = 'translateY(0)';
+        }, delay);
+      });
+    });
+  </script>
+</body>
+</html>

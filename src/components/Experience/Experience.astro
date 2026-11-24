@@ -1,0 +1,77 @@
+---
+// src/components/Experience/Experience.astro
+import { experiences } from '../../data/experience';
+---
+
+<section id="experience" class="py-24 md:py-32 scroll-mt-16">
+  <div class="section-container">
+    <!-- Section Header -->
+    <div class="section-header reveal">
+      <h2 class="section-title">Experience</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="max-w-3xl">
+      {experiences.map((exp, i) => (
+        <div class="relative pl-8 reveal" style={`transition-delay: ${0.1 + i * 0.1}s;`}>
+          <!-- Timeline line -->
+          <div class="timeline-line"></div>
+          <!-- Timeline dot -->
+          <div class="timeline-dot"></div>
+
+          <!-- Card content -->
+          <div class="card p-6 md:p-8 ml-6">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-4">
+              <div>
+                <h3 class="text-lg font-semibold mb-1" style="color: var(--color-text-primary);">
+                  {exp.position}
+                </h3>
+                <p class="font-medium" style="color: var(--color-accent-primary);">
+                  {exp.companyUrl ? (
+                    <a
+                      href={exp.companyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="keyword-link"
+                    >
+                      @ {exp.company}
+                    </a>
+                  ) : (
+                    `@ ${exp.company}`
+                  )}
+                </p>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <p class="font-mono text-sm" style="color: var(--color-text-muted);">{exp.duration}</p>
+                <p class="text-xs mt-1" style="color: var(--color-text-muted);">{exp.location}</p>
+              </div>
+            </div>
+
+            <!-- Description -->
+            <p class="text-sm mb-5 leading-relaxed" style="color: var(--color-text-secondary);">
+              {exp.description}
+            </p>
+
+            <!-- Responsibilities -->
+            <ul class="space-y-2 mb-6">
+              {exp.responsibilities.map(r => (
+                <li class="flex items-start gap-2 text-sm" style="color: var(--color-text-secondary);">
+                  <span class="mt-0.5 flex-shrink-0" style="color: var(--color-accent-primary);">▹</span>
+                  <span>{r}</span>
+                </li>
+              ))}
+            </ul>
+
+            <!-- Tech tags -->
+            <div class="flex flex-wrap gap-2 pt-3 border-t" style="border-color: var(--color-border-subtle);">
+              {exp.technologies.map(tech => (
+                <span class="tech-tag">{tech}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

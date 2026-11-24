@@ -1,0 +1,57 @@
+---
+// src/components/Skills/Skills.astro
+import { skillCategories } from '../../data/skills';
+---
+
+<section id="skills" class="py-24 md:py-32 scroll-mt-16">
+  <div class="section-container">
+    <!-- Section Header -->
+    <div class="section-header reveal">
+      <h2 class="section-title">Technical Expertise</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <p class="text-sm mb-12 max-w-2xl reveal" style="color: var(--color-text-secondary); transition-delay: 0.1s;">
+      Technologies and tools I work with professionally. Organized by domain rather than arbitrary proficiency ratings.
+    </p>
+
+    <!-- Skills Grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {skillCategories.map((category, i) => (
+        <div
+          class="card p-6 group reveal"
+          style={`transition-delay: ${0.1 + i * 0.08}s;`}
+        >
+          <!-- Category header -->
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-2xl" aria-hidden="true">{category.icon}</span>
+            <div>
+              <h3 class="font-semibold text-sm" style="color: var(--color-text-primary);">
+                {category.label}
+              </h3>
+            </div>
+          </div>
+
+          <p class="text-xs mb-4 leading-relaxed" style="color: var(--color-text-muted);">
+            {category.description}
+          </p>
+
+          <!-- Skill items -->
+          <ul class="space-y-1.5">
+            {category.skills.map(skill => (
+              <li class="flex items-center gap-2 text-sm font-mono" style="color: var(--color-text-secondary);">
+                <span style="color: var(--color-accent-primary);">▸</span>
+                {skill}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <!-- Note about skill bars -->
+    <p class="text-xs text-center mt-10 reveal" style="color: var(--color-text-muted); transition-delay: 0.5s;">
+      No skill-percentage bars. Real proficiency comes from using tools in production — not from arbitrary percentages.
+    </p>
+  </div>
+</section>
